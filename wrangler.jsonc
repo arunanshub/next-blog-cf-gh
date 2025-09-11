@@ -23,7 +23,11 @@
   /**
    * https://opennext.js.org/cloudflare/howtos/keep_names
    */
-  "keep_names": false
+  "keep_names": false,
+  /**
+   * Show preview URLs: essential for preview deployments (PRs, etc.)
+   */
+  "preview_urls": true,
   /**
    * Bindings
    * Bindings allow your Worker to interact with resources on the Cloudflare Developer Platform, including
