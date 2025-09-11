@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  experimental: {
+    inlineCss: true,
+    webpackMemoryOptimizations: true,
+  }
 };
 
 export default nextConfig;
