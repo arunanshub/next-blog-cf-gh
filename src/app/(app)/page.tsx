@@ -1,12 +1,13 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Image from "next/image";
-import imageAstrophysics from "@/assets/astrophysics-spectrum.png";
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Image from "next/image"
+import imageAstrophysics from "@/assets/astrophysics-spectrum.png"
+import Finder from "@/app/(app)/_components/finder"
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center mx-auto max-w-screen-md p-4 font-sans">
-      <div className="flex flex-col gap-4 w-full">
+    <div className="mx-auto flex max-w-screen-md flex-col items-center justify-center p-4 font-sans">
+      <div className="flex w-full flex-col gap-4">
         <Button>hello world</Button>
         <Button variant="destructive">hello world</Button>
 
@@ -27,6 +28,7 @@ export default function Home() {
               alt="astrophysics spectrum"
               placeholder="blur"
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-contain"
             />
           </div>
@@ -36,11 +38,14 @@ export default function Home() {
               alt="astrophysics spectrum"
               placeholder="blur"
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-contain"
             />
           </div>
         </section>
+
+        <Finder />
       </div>
     </div>
-  );
+  )
 }

@@ -1,4 +1,5 @@
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from "next-themes"
+import TanstackQueryProvider from "./tanstack-query-provider"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -8,7 +9,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       enableSystem
       disableTransitionOnChange
     >
-      {children}
+      <TanstackQueryProvider>{children}</TanstackQueryProvider>
     </ThemeProvider>
-  );
+  )
 }
