@@ -1,0 +1,70 @@
+on:
+  push:
+    branches: [master]
+
+name: Deploy to Cloudflare Production
+jobs:
+  deploy:
+    permissions:
+      pull-requests: write
+      statuses: write
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install Pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Cache Next.js Build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build:cf
+
+      - name: Deploy to Cloudflare Workers with Wrangler (production)
+        id: deploy-production
+        uses: cloudflare/wrangler-action@v3.14.1
+        # deploying to production
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Create Production Deployment Status Check
+        uses: actions/github-script@v7
+        # Run always to handle failures too
+        if: always() && github.ref_name == 'master' && github.event_name == 'push'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const deploymentUrl = '${{ steps.deploy-production.outputs.deployment-url }}';
+            const state = '${{ job.status }}' === 'success' ? 'success' : 'failure';
+            const description = state === 'success' ? `Deployed to production: ${deploymentUrl}` : 'Deployment failed';
+
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: state,
+              context: 'Deploy to Production',
+              target_url: state === 'success' ? deploymentUrl : undefined,
+              description: description
+            });
