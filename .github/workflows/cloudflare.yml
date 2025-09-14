@@ -31,6 +31,13 @@ jobs:
       - name: Build
         run: pnpm build:cf
 
+      - name: Set Branch Name
+        id: set-branch
+        run: |
+          BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
+          SANITIZED_BRANCH=$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[\/_.]/-/g' | sed 's/[^a-z0-9-]//g' | sed 's/^-*//')
+          echo "branch_name=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
+
       - name: Deploy to Cloudflare Workers with Wrangler
         id: deploy-production
         uses: cloudflare/wrangler-action@v3.14.1
@@ -46,4 +53,9 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          command: versions upload
+          command: versions upload --preview-alias git-${{ steps.set-branch.outputs.branch_name }}
+
+      - name: Print deployment URLs as outputs
+        if: github.event_name != 'pull_request'
+        run: |
+          echo "preview_deployment_url=https://${{ steps.deploy-preview.outputs.deployment-url }}" >> $GITHUB_OUTPUT
