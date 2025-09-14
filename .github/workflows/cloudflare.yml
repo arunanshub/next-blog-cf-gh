@@ -64,7 +64,25 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           command: versions upload --preview-alias git-${{ steps.set-branch.outputs.branch_name }}
 
-      - name: Print deployment URLs as outputs
+      - name: Extract Preview URLs
+        id: extract-urls
         if: github.event_name == 'pull_request'
         run: |
-          echo "preview_deployment_url=${{ steps.deploy-preview.outputs.deployment-url }}" >> $GITHUB_OUTPUT
+          OUTPUT="${{ steps.deploy-preview.outputs.command-output }}"
+          PREVIEW_URL=$(echo "$OUTPUT" | grep -oP 'Version Preview URL: \Khttps?://[^\s]+' || echo "Not found")
+          ALIAS_URL=$(echo "$OUTPUT" | grep -oP '(Version Preview Alias URL|Assigned preview alias .* at): \Khttps?://[^\s]+' || echo "Not found")
+          echo "preview_url=$PREVIEW_URL" >> $GITHUB_OUTPUT
+          echo "alias_url=$ALIAS_URL" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR with Preview URLs
+        uses: thollander/actions-comment-pull-request@v3
+        if: github.event_name == 'pull_request'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          message: |
+            **Cloudflare Preview Deployment**
+
+            - Preview URL: ${{ steps.extract-urls.outputs.preview_url }}
+            - Preview Alias URL: ${{ steps.extract-urls.outputs.alias_url }}
+          comment-tag: cloudflare-preview
+          mode: upsert
