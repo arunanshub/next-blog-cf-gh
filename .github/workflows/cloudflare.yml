@@ -32,6 +32,18 @@ jobs:
         run: pnpm build:cf
 
       - name: Deploy to Cloudflare Workers with Wrangler
+        id: deploy-production
         uses: cloudflare/wrangler-action@v3.14.1
+        # deploying to production
+        if: github.event_name != 'pull_request'
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Deploy to Cloudflare Workers with Wrangler
+        id: deploy-preview
+        uses: cloudflare/wrangler-action@v3.14.1
+        # deploying to preview
+        if: github.event_name == 'pull_request'
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: versions upload
