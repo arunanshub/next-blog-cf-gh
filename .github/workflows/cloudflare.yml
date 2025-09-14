@@ -25,7 +25,7 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      - name: Cache dependencies
+      - name: Cache Next.js Build
         uses: actions/cache@v4
         with:
           path: |
@@ -40,14 +40,7 @@ jobs:
       - name: Build
         run: pnpm build:cf
 
-      - name: Set Branch Name
-        id: set-branch
-        run: |
-          BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
-          SANITIZED_BRANCH=$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[\/_.]/-/g' | sed 's/[^a-z0-9-]//g' | sed 's/^-*//')
-          echo "branch_name=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
-
-      - name: Deploy to Cloudflare Workers with Wrangler
+      - name: Deploy to Cloudflare Workers with Wrangler (production)
         id: deploy-production
         uses: cloudflare/wrangler-action@v3.14.1
         # deploying to production
@@ -55,7 +48,14 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
-      - name: Deploy to Cloudflare Workers with Wrangler
+      - name: Set Branch Name
+        id: set-branch
+        run: |
+          BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
+          SANITIZED_BRANCH=$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[\/_.]/-/g' | sed 's/[^a-z0-9-]//g' | sed 's/^-*//')
+          echo "branch_name=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Deploy to Cloudflare Workers with Wrangler (preview)
         id: deploy-preview
         uses: cloudflare/wrangler-action@v3.14.1
         # deploying to preview
@@ -67,4 +67,4 @@ jobs:
       - name: Print deployment URLs as outputs
         if: github.event_name == 'pull_request'
         run: |
-          echo "preview_deployment_url=https://${{ steps.deploy-preview.outputs.deployment-url }}" >> $GITHUB_OUTPUT
+          echo "preview_deployment_url=${{ steps.deploy-preview.outputs.deployment-url }}" >> $GITHUB_OUTPUT
