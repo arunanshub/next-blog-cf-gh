@@ -3,13 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
 import imageAstrophysics from "@/assets/astrophysics-spectrum.png"
 import Finder from "@/app/(app)/_components/finder"
+import ClientButton from "./_components/client-button"
 
 export default function Home() {
   return (
     <div className="mx-auto flex max-w-screen-md flex-col items-center justify-center p-4 font-sans">
       <div className="flex w-full flex-col gap-4">
-        <Button>hello world</Button>
+        <Button>But this has changed</Button>
         <Button variant="destructive">hello world</Button>
+        <ClientButton />
 
         <Card>
           <CardHeader>

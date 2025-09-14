@@ -8,6 +8,9 @@ on:
 
 jobs:
   deploy:
+    permissions:
+      pull-requests: write
+
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -25,13 +28,64 @@ jobs:
           node-version: 22
           cache: pnpm
 
+      - name: Cache Next.js Build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Build
         run: pnpm build:cf
 
-      - name: Deploy to Cloudflare Workers with Wrangler
+      - name: Deploy to Cloudflare Workers with Wrangler (production)
+        id: deploy-production
         uses: cloudflare/wrangler-action@v3.14.1
+        # deploying to production
+        if: github.event_name != 'pull_request'
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Set Branch Name
+        id: set-branch
+        run: |
+          BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
+          SANITIZED_BRANCH=$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[\/_.]/-/g' | sed 's/[^a-z0-9-]//g' | sed 's/^-*//')
+          echo "branch_name=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Deploy to Cloudflare Workers with Wrangler (preview)
+        id: deploy-preview
+        uses: cloudflare/wrangler-action@v3.14.1
+        # deploying to preview
+        if: github.event_name == 'pull_request'
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: versions upload --preview-alias git-${{ steps.set-branch.outputs.branch_name }}
+
+      - name: Extract Preview URLs
+        id: extract-urls
+        if: github.event_name == 'pull_request'
+        run: |
+          OUTPUT="${{ steps.deploy-preview.outputs.command-output }}"
+          PREVIEW_URL=$(echo "$OUTPUT" | grep -oP 'Version Preview URL: \Khttps?://[^\s]+' || echo "Not found")
+          ALIAS_URL=$(echo "$OUTPUT" | grep -oP '(Version Preview Alias URL|Assigned preview alias .* at): \Khttps?://[^\s]+' || echo "Not found")
+          echo "preview_url=$PREVIEW_URL" >> $GITHUB_OUTPUT
+          echo "alias_url=$ALIAS_URL" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR with Preview URLs
+        uses: thollander/actions-comment-pull-request@v3
+        if: github.event_name == 'pull_request'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          message: |
+            **Cloudflare Preview Deployment**
+
+            - Preview URL: ${{ steps.extract-urls.outputs.preview_url }}
+            - Preview Alias URL: ${{ steps.extract-urls.outputs.alias_url }}
+          comment-tag: cloudflare-preview
+          mode: upsert
