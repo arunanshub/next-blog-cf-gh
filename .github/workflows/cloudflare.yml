@@ -51,6 +51,27 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
+      - name: Create Production Deployment Status Check
+        uses: actions/github-script@v7
+        # Run always to handle failures too
+        if: always() && github.ref_name == 'master' && github.event_name == 'push'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const deploymentUrl = '${{ steps.deploy-production.outputs.deployment-url }}';
+            const state = '${{ job.status }}' === 'success' ? 'success' : 'failure';
+            const description = state === 'success' ? `Deployed to production: ${deploymentUrl}` : 'Deployment failed';
+
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: state,
+              context: 'Deploy to Production',
+              target_url: state === 'success' ? deploymentUrl : undefined,
+              description: description
+            });
+
       - name: Set Branch Name
         id: set-branch
         run: |
