@@ -116,8 +116,8 @@ runs only on pull requests to the master branch**.
 ## TODO
 
 - [ ] Set up Cloudflare based image optimization loader.
-      [^nextjs-doc-cf-img-opt][^cf-docs-img-opt]
+      [^nextjs-docs-cf-img-opt][^cf-docs-img-opt]
 
-[^nextjs-docs-cf]: https://nextjs.org/docs/app/api-reference/config/next-config-js/images#cloudflare
+[^nextjs-docs-cf-img-opt]: https://nextjs.org/docs/app/api-reference/config/next-config-js/images#cloudflare
 
 [^cf-docs-img-opt]: https://developers.cloudflare.com/images/transform-images/integrate-with-frameworks/
