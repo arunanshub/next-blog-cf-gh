@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
     inlineCss: true,
     webpackMemoryOptimizations: true,
   },
+  images: {
+    loader: "custom",
+    loaderFile: "./cf-image-loader.ts",
+  },
 }
 
 export default nextConfig
