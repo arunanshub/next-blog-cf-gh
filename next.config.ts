@@ -5,7 +5,6 @@ import { withContentCollections } from "@content-collections/next"
 const nextConfig: NextConfig = {
   experimental: {
     inlineCss: true,
-    webpackMemoryOptimizations: true,
   },
   typedRoutes: true,
   pageExtensions: ["ts", "tsx", "mdx", "md"],
