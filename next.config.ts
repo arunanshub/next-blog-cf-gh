@@ -6,7 +6,6 @@ const nextConfig: NextConfig = {
   experimental: {
     inlineCss: true,
     webpackMemoryOptimizations: true,
-    mdxRs: true,
   },
   typedRoutes: true,
   pageExtensions: ["ts", "tsx", "mdx", "md"],
@@ -14,6 +13,12 @@ const nextConfig: NextConfig = {
 
 const withMDX = createMDX({
   extension: /\.(md|mdx)$/,
+  options: {
+    remarkPlugins: [
+      "remark-frontmatter",
+      ["remark-mdx-frontmatter", { name: "meta" }],
+    ],
+  },
 })
 
 export default withContentCollections(withMDX(nextConfig))

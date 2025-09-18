@@ -8,6 +8,9 @@ const posts = defineCollection({
   schema: z.object({
     title: z.string(),
   }),
+  transform: ({ content: _, ...post }) => {
+    return post
+  },
 })
 
 export default defineConfig({
