@@ -5,7 +5,9 @@ import Link from "next/link"
 export default function Posts() {
   return (
     <div>
-      all contents:
+      <pre className="font-mono">{JSON.stringify(allPosts, null, 2)}</pre>
+
+      <span>all contents:</span>
       <ul>
         {allPosts.map((post) => (
           <li key={post._meta.path}>
