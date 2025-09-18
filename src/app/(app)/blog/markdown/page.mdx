@@ -24,6 +24,26 @@ def foo():
     return 23
 ```
 
+and the whole code block is powered by a simple:
+
+```ts
+import type { MDXComponents } from "mdx/types"
+
+const components = {
+  code: ({ children, ...props }) => {
+    return (
+      <code {...props} className="font-mono!">
+        {children}
+      </code>
+    )
+  },
+} satisfies MDXComponents
+
+export function useMDXComponents(): MDXComponents {
+  return components
+}
+```
+
 import Image from "next/image"
 import imageAstrophysics from "@/assets/astrophysics-spectrum.png"
 
