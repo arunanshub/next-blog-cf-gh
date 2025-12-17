@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@content-collections/core':
-        specifier: ^0.12.0
-        version: 0.12.0(typescript@5.9.3)
+        specifier: ^0.13.0
+        version: 0.13.0(typescript@5.9.3)
       '@content-collections/next':
         specifier: ^0.2.7
-        version: 0.2.9(@content-collections/core@0.12.0(typescript@5.9.3))(next@16.0.10(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
+        version: 0.2.9(@content-collections/core@0.13.0(typescript@5.9.3))(next@16.0.10(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
       '@mdx-js/loader':
         specifier: ^3.1.1
         version: 3.1.1
@@ -596,8 +596,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@content-collections/core@0.12.0':
-    resolution: {integrity: sha512-fAweH9JtME6edGzSDavHrDTxyt2jLzikw+I75yKOd/QBmxuAQrK/cFRqxmDznbdm6m3AZnpDPvh63IQ4jpvYvw==}
+  '@content-collections/core@0.13.0':
+    resolution: {integrity: sha512-AWU06OLQ8N6Ma2ICLOCDqEaRZZHidmbXzKDTEtPh9JOiP6S6LBUqvBarWopeeqs3l4p830kCywFJ3rPv9rOPWA==}
     peerDependencies:
       typescript: ^5.0.2
 
@@ -5972,7 +5972,7 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20251210.0':
     optional: true
 
-  '@content-collections/core@0.12.0(typescript@5.9.3)':
+  '@content-collections/core@0.13.0(typescript@5.9.3)':
     dependencies:
       '@standard-schema/spec': 1.0.0
       camelcase: 8.0.0
@@ -5987,14 +5987,14 @@ snapshots:
       typescript: 5.9.3
       yaml: 2.8.2
 
-  '@content-collections/integrations@0.3.0(@content-collections/core@0.12.0(typescript@5.9.3))':
+  '@content-collections/integrations@0.3.0(@content-collections/core@0.13.0(typescript@5.9.3))':
     dependencies:
-      '@content-collections/core': 0.12.0(typescript@5.9.3)
+      '@content-collections/core': 0.13.0(typescript@5.9.3)
 
-  '@content-collections/next@0.2.9(@content-collections/core@0.12.0(typescript@5.9.3))(next@16.0.10(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))':
+  '@content-collections/next@0.2.9(@content-collections/core@0.13.0(typescript@5.9.3))(next@16.0.10(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))':
     dependencies:
-      '@content-collections/core': 0.12.0(typescript@5.9.3)
-      '@content-collections/integrations': 0.3.0(@content-collections/core@0.12.0(typescript@5.9.3))
+      '@content-collections/core': 0.13.0(typescript@5.9.3)
+      '@content-collections/integrations': 0.3.0(@content-collections/core@0.13.0(typescript@5.9.3))
       next: 16.0.10(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
 
   '@cspotcode/source-map-support@0.8.1':
