@@ -47,7 +47,7 @@ jobs:
 
       - name: Deploy to Cloudflare Workers with Wrangler (production)
         id: deploy-production
-        uses: cloudflare/wrangler-action@v3.14.1
+        uses: cloudflare/wrangler-action@v3.15.0
         # deploying to production
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

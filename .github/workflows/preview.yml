@@ -53,7 +53,7 @@ jobs:
 
       - name: Deploy to Cloudflare Workers with Wrangler (preview)
         id: deploy-preview
-        uses: cloudflare/wrangler-action@v3.14.1
+        uses: cloudflare/wrangler-action@v3.15.0
         # deploying to preview
         if: github.event_name == 'pull_request'
         with:
