@@ -45,7 +45,7 @@
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
     "eslint": "^9.35.0",
-    "eslint-config-next": "16.2.5",
+    "eslint-config-next": "16.2.6",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "remark-frontmatter": "^5.0.0",
