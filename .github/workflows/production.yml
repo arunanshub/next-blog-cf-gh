@@ -53,7 +53,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Create Production Deployment Status Check
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         # Run always to handle failures too
         if: always() && github.ref_name == 'master' && github.event_name == 'push'
         with:
